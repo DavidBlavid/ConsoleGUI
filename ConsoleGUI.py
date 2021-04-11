@@ -1,5 +1,6 @@
 import math
 import time
+import random
 import tkinter as tk
 
 import Widget
@@ -93,20 +94,20 @@ def update():
 
 real_y = window_height - window_height // 3
 
-add_widget('gradient', 'grad', 0, window_height - window_height // 3, window_width, window_height // 3, 10)
-widgets['grad'].set_direction('down')
-widgets['grad'].set_transparent(True)
+# add_widget('gradient', 'grad', 0, window_height - window_height // 3, window_width, window_height // 3, 0)
+# widgets['grad'].set_direction('down')
+# widgets['grad'].set_transparent(True)
 
+add_widget('diagram', 'd1', 0, 0, window_width + 2, window_height, 3)
+add_widget('variable', 'v1', 70, 0, 28, 5, 4)
 
-add_widget('diagram', 'd1', 0, 0, window_width, window_height, 5)
-add_widget('diagram', 'd2', 0, 0, window_width, window_height, 5)
+widgets['d1'].set_min_max(0, 29)
+widgets['d1'].set_fill('#')
+widgets['d1'].set_transparent(True)
+widgets['d1'].set_fill_bar(True)
+widgets['d1'].set_draw_axis(True)
 
-widgets['d1'].set_draw_axis(False)
-widgets['d1'].set_fill('0')
-
-widgets['d2'].set_draw_axis(False)
-widgets['d2'].set_fill('1')
-widgets['d2'].set_transparent(True)
+widgets['v1'].set_transparent(True)
 
 t.pack()
 
@@ -114,10 +115,10 @@ while True:
     time.sleep(0.05)
     update()
 
-    widgets['grad'].set_pos(0, real_y + int(math.sin(tick / 15) * 4))
-    widgets['grad'].height = window_height // 3 - int(math.sin(tick / 15) * 4)
+    # widgets['grad'].set_pos(0, real_y + int(math.sin(tick / 50) * 40))
+    # widgets['grad'].height = window_height // 3 - int(math.sin(tick / 50) * 40)
 
-    widgets['d1'].add_value(math.sin(tick / 10) * 20 + 50)
-    widgets['d2'].add_value(math.cos(tick / 10) * 20 + 50)
+    widgets['d1'].add_value(math.sin(tick/15) * 15 + 15)
+    widgets['v1'].set_variable('Height', math.sin(tick/15) * 15 + 15)
 
     tick += 1
