@@ -2,6 +2,9 @@
 A Python Graphics Library for the Console. Contains several Widgets.  
 **STILL VERY MUCH WORK IN PROGRESS**  
 
+
+![Project Example](https://raw.githubusercontent.com/DavidBlavid/ConsoleGUI/main/ConsoleGUI.png)
+
 -------
 # Widgets:  
 Widgets can be added by using _add_widget(widget_type, name, x, y, width, height, [z])_.  
