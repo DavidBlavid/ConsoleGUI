@@ -1,13 +1,27 @@
 from Color import *
 
 class Widget:
-    def __init__(self, width, height, x, y, z=0):
+    def __init__(self, name, x, y, width, height, z=0, transparent=False):
         self.width = width
         self.height = height
         
         self.x = x
         self.y = y
         self.z = z
+
+        self.name = name
+
+        self.transparent=transparent
+
+    def set_transparent(self, transparent):
+        self.transparent=transparent
+
+    def get_type(self):
+        return self.__class__.__name__
+
+    def set_pos(self, x, y):
+        self.x = x
+        self.y = y
 
     def get_printable(self):
 
@@ -38,18 +52,6 @@ class Rect(Widget):
         return widget_print
 
 class Textbox(Widget):
-
-    def __init__(self, new_text, width, height, x, y, z=0):
-        self.width = width
-        self.height = height
-        
-        self.x = x
-        self.y = y
-        self.z = z
-
-        self.align = "left"
-        #print(new_text)
-        self.set_text(new_text)
 
     def set_text(self, new_text):
         self.text = ['' for i in range(self.height)]
