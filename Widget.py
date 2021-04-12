@@ -1,4 +1,5 @@
 from Color import *
+import math
 
 
 class Widget:
@@ -20,13 +21,22 @@ class Widget:
     def get_type(self):
         return self.__class__.__name__
 
+    def get_name(self):
+        return self.name
+
     def set_pos(self, x, y):
         self.x = x
         self.y = y
 
-    def set_scale(self, width, height):
+    def get_pos(self):
+        return self.x, self.y, self.z
+
+    def resize(self, width, height):
         self.width = width
         self.height = height
+
+    def get_size(self):
+        return self.width, self.size
 
     def get_printable(self):
 
@@ -57,9 +67,46 @@ class Rect(Widget):
         return widget_print
 
 
-class Textbox(Widget):
+class Ellipse(Widget):
+    fill_char = 'O'
+    empty_char = ' '
+    scale = 1
 
+    def set_fill(self, fill_char, empty_char):
+        self.fill_char = fill_char
+        self.empty_char = empty_char
+
+    def set_scale(self, scale):
+        self.scale = scale
+
+    def get_printable(self):
+
+        widget_print = []
+
+        center_x = self.width / 2
+        center_y = self.height / 2
+
+        for y in range(self.height):
+            widget_print.append('')
+            for x in range(self.width):
+
+                # if math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2) < diameter:
+                if ((x - center_x) ** 2) / (self.width ** 2) + \
+                        ((y - center_y) ** 2) / (self.height ** 2) <= self.scale / 4.:
+
+                    widget_print[y] += self.fill_char
+                else:
+                    widget_print[y] += self.empty_char
+
+        return widget_print
+
+
+class Textbox(Widget):
     text = ''
+    empty_char = ' '
+
+    def set_empty(self, empty_char):
+        self.empty_char = empty_char
 
     def set_text(self, new_text):
         self.text = ['' for i in range(self.height)]
@@ -72,7 +119,7 @@ class Textbox(Widget):
                     self.text[y] += new_text[counter]
                     counter += 1
                 else:
-                    self.text[y] += ' '
+                    self.text[y] += self.empty_char
 
     def get_printable(self):
 
@@ -164,9 +211,9 @@ class Diagram(Widget):
         self.max_value = new_max
 
     def add_value(self, value):
-        for i in range(self.width-3):
-            self.values[i] = self.values[i+1]
-        self.values[self.width-3] = value
+        for i in range(self.width - 3):
+            self.values[i] = self.values[i + 1]
+        self.values[self.width - 3] = value
 
     def set_fill(self, char):
         self.fill_char = char
@@ -179,14 +226,14 @@ class Diagram(Widget):
             next_values = [None] * (width - 2)
 
         if self.width > width:
-            for i in range(self.width - width, self.width-2):
+            for i in range(self.width - width, self.width - 2):
                 next_values[counter] = self.values[i]
                 counter += 1
             self.values = next_values
 
         elif self.width < width:
             for i in range(0, self.width - 2):
-                next_values[width-self.width + counter] = self.values[i]
+                next_values[width - self.width + counter] = self.values[i]
                 counter += 1
             self.values = next_values
 
@@ -203,23 +250,23 @@ class Diagram(Widget):
                 if x == y == 0 and self.draw_axis:
                     widget_print[y] += '⮝'
 
-                elif x == 0 and y == self.height-1 and self.draw_axis:
+                elif x == 0 and y == self.height - 1 and self.draw_axis:
                     widget_print[y] += '+'
 
                 elif x == 0 and self.draw_axis:
                     widget_print[y] += '|'
 
-                elif x == self.width-1 and y == self.height-1 and self.draw_axis:
+                elif x == self.width - 1 and y == self.height - 1 and self.draw_axis:
                     widget_print[y] += '⮞'
 
-                elif y == self.height-1 and self.draw_axis:
+                elif y == self.height - 1 and self.draw_axis:
                     widget_print[y] += '-'
 
                 elif y == 0 and 0 < x <= len(str(self.max_value)) and self.draw_axis:
-                    widget_print[y] += str(self.max_value)[x-1]
+                    widget_print[y] += str(self.max_value)[x - 1]
 
-                elif y == self.height-2 and 0 < x <= len(str(self.min_value)) and self.draw_axis:
-                    widget_print[y] += str(self.min_value)[x-1]
+                elif y == self.height - 2 and 0 < x <= len(str(self.min_value)) and self.draw_axis:
+                    widget_print[y] += str(self.min_value)[x - 1]
 
                 else:
                     if self.values[x] is None:
@@ -228,16 +275,16 @@ class Diagram(Widget):
 
                         # print(self.values[x] - self.min_value)
 
-                        value_y = ((self.values[x] - self.min_value) * (self.height-1)
+                        value_y = ((self.values[x] - self.min_value) * (self.height - 1)
                                    / (self.max_value - self.min_value))
 
                         if self.fill_bar:
-                            if value_y >= self.height-1-y:
+                            if value_y >= self.height - 1 - y:
                                 widget_print[y] += self.fill_char
                             else:
                                 widget_print[y] += ' '
                         else:
-                            if value_y == self.height-1-y:
+                            if value_y == self.height - 1 - y:
                                 widget_print[y] += self.fill_char
                             else:
                                 widget_print[y] += ' '
@@ -279,9 +326,9 @@ class Bar(Widget):
         if self.direction in ['right', 'left']:
             filled = int((self.value - self.min_value) * self.width / (self.max_value - self.min_value))
             if self.direction == 'left':
-                widget_print = [self.fill_char * filled + self.empty_char * (self.width-filled)] * self.height
+                widget_print = [self.fill_char * filled + self.empty_char * (self.width - filled)] * self.height
             if self.direction == 'right':
-                widget_print = [self.empty_char * (self.width-filled) + self.fill_char * filled] * self.height
+                widget_print = [self.empty_char * (self.width - filled) + self.fill_char * filled] * self.height
 
         if self.direction in ['up', 'down']:
             filled = int((self.value - self.min_value) * self.height / (self.max_value - self.min_value))

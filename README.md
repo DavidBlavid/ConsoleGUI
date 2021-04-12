@@ -67,22 +67,33 @@ Widgets with higher z values get draw over widgets with lower z values.
 ### Widget Functions
 - **_set_transparent(transparent)_**  
     If a Widget is transparent its empty spaces do not get drawn,
-    revealing the Widgets behind it.
-    The default value ist false.  
+    revealing the Widgets behind it.  
     ```Default: transparent = False```  
     ```Values:  True, False```
   
 
 - **_get_type()_**  
-    Returns the Type of a Widget
+    Returns the Type of the Widget.
+  
+
+- **_get_name()_**  
+    Returns the Name of the Widget.
 
 
 - **_set_pos(x, y)_**   
-    Sets the Position of a Widget
+    Sets the Position of the Widget.
+  
+  
+- **_get_pos()_**  
+    Returns a tuple of the X, Y and Z of the Widget.
+  
+
+- **_get_size()_**  
+    Returns a tuple of the Width and Height of the Widget.
 
 
-- **_set_scale(width, height)_**   
-    Sets the Scale of a Widget
+- **_resize(width, height)_**   
+    Sets the Scale of a Widget.
 
 ---
 
@@ -92,9 +103,24 @@ Draws a filled Rectangle.
 
 - **_set_fill(char)_**   
     Sets the Character the Rectangle is filled with.  
-    ```Default: fill_char = '#'```  
-   
+    ```Default: fill_char = '#'```
+
+### Ellipse
+Draws a filled Ellipse  
+
+- **_set_fill(fill_char, empty_char)_**   
+    fill_char controls the Character the Ellipse is filled with.  
+    empty_char controls the Character the Background of the Ellipse is filled with.  
+    ```Default: fill_char = 'O', empty_char = ' '```
   
+  
+- **_set_scale(scale)_**   
+    Sets the scale the Ellipse is drawn with.  
+    scale < 1.0: Ellipse is smaller than borders.  
+    scale = 1.0: Ellipse touches borders.  
+    scale > 1.0: Ellipse is bigger than borders.  
+    ```Default: scale = 1.0```
+
 ### Textbox
 Draws a Textbox.
 
@@ -113,12 +139,12 @@ Like Rect, but filled with a Gradient.
 ### Variable   
 Displays the Name of a Variable with a Value next to it.  
 
-- **_set_variable(self, name, value)_**  
+- **_set_variable(name, value)_**  
     Adds a new Variable or sets the value of an existing one.  
     Values have to be continuosly updated or they will show old values.  
   
   
-- **_remove_variable(self, name)_**  
+- **_remove_variable(name)_**  
     Removes a Variable from the list.
   
 ### Diagram

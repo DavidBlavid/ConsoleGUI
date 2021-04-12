@@ -8,26 +8,30 @@ class CG:
 
     root = tk.Tk()
 
+    caption = 'ConsoleGUI'
+
     t = tk.Text(root, bg="black", fg="white", height=window_height, width=window_width)
     t.pack()
 
     widgets = {}
     drawboard = []
 
-    def add_widget(self, widget_type, name, x, y, width, height, z=0):
+    def add_widget(self, widget_type, name, x, y, width, height, z=0, transparent=False):
         if width > 0 and height > 0:
             if widget_type in ('rect', 'Rect'):
-                self.widgets[name] = Widget.Rect(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Rect(name, x, y, width, height, z, transparent)
             elif widget_type in ('textbox', 'Textbox'):
-                self.widgets[name] = Widget.Textbox(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Textbox(name, x, y, width, height, z, transparent)
             elif widget_type in ('gradient', 'Gradient'):
-                self.widgets[name] = Widget.Gradient(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Gradient(name, x, y, width, height, z, transparent)
             elif widget_type in ('variable', 'Variable'):
-                self.widgets[name] = Widget.Variable(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Variable(name, x, y, width, height, z, transparent)
             elif widget_type in ('diagram', 'Diagram'):
-                self.widgets[name] = Widget.Diagram(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Diagram(name, x, y, width, height, z, transparent)
             elif widget_type in ('bar', 'Bar'):
-                self.widgets[name] = Widget.Bar(name, x, y, width, height, z)
+                self.widgets[name] = Widget.Bar(name, x, y, width, height, z, transparent)
+            elif widget_type in ('ellipse', 'Ellipse'):
+                self.widgets[name] = Widget.Ellipse(name, x, y, width, height, z, transparent)
             else:
                 print("[Warning] add_widget() called with unknown widget_type")
         else:
@@ -42,6 +46,17 @@ class CG:
 
     def get_size(self):
         return self.window_width, self.window_height
+
+    def set_caption(self, caption):
+        self.caption = caption
+        self.root.title(caption)
+
+    def get_caption(self):
+        return self.caption
+
+    def set_font(self, font, size):
+        config = (font, size)
+        self.t.configure(font = config)
 
     def resize(self, width, height):
         if width > 0 and height > 0:
