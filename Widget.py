@@ -123,8 +123,6 @@ class Variable(Widget):
             max_length = max(len(v), max_length)
 
         for v in enumerate(self.values):
-            current_v = v[1]
-
             widget_print[v[0]] = v[1] + ' ' * (max_length - len(v[1]) + 1) + str(round(self.values[v[1]], 2))
 
         for w in enumerate(widget_print):
@@ -230,7 +228,7 @@ class Diagram(Widget):
 
                         # print(self.values[x] - self.min_value)
 
-                        value_y = ((self.values[x] - self.min_value) * (self.height-1) \
+                        value_y = ((self.values[x] - self.min_value) * (self.height-1)
                                    / (self.max_value - self.min_value))
 
                         if self.fill_bar:
@@ -243,5 +241,55 @@ class Diagram(Widget):
                                 widget_print[y] += self.fill_char
                             else:
                                 widget_print[y] += ' '
+
+        return widget_print
+
+
+class Bar(Widget):
+    min_value = 0
+    max_value = 10
+    fill_char = '='
+    empty_char = ' '
+
+    direction = 'left'
+
+    value = 0
+
+    def set_min_max(self, new_min, new_max):
+        self.min_value = new_min
+        self.max_value = new_max
+
+    def set_fill(self, fill_char, empty_char):
+        self.fill_char = fill_char
+        self.empty_char = empty_char
+
+    def set_value(self, value):
+        self.value = value
+
+    def set_direction(self, direction):
+        if direction in ['right', 'left', 'up', 'down']:
+            self.direction = direction
+        else:
+            print("[Error] set_direction() called from widget " + self.name + " with unknown direction " + direction)
+
+    def get_printable(self):
+
+        widget_print = []
+
+        if self.direction in ['right', 'left']:
+            filled = int((self.value - self.min_value) * self.width / (self.max_value - self.min_value))
+            if self.direction == 'left':
+                widget_print = [self.fill_char * filled + self.empty_char * (self.width-filled)] * self.height
+            if self.direction == 'right':
+                widget_print = [self.empty_char * (self.width-filled) + self.fill_char * filled] * self.height
+
+        if self.direction in ['up', 'down']:
+            filled = int((self.value - self.min_value) * self.height / (self.max_value - self.min_value))
+            if self.direction == 'up':
+                widget_print += [self.fill_char * self.width] * filled
+                widget_print += [self.empty_char * self.width] * (self.height - filled)
+            if self.direction == 'down':
+                widget_print += [self.empty_char * self.width] * (self.height - filled)
+                widget_print += [self.fill_char * self.width] * filled
 
         return widget_print

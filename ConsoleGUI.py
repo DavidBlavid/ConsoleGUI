@@ -1,124 +1,102 @@
-import math
-import time
-import random
 import tkinter as tk
-
 import Widget
 
-tick = 0
 
-window_width = 100
-window_height = 30
+class CG:
+    window_width = 100
+    window_height = 30
 
-root = tk.Tk()
+    root = tk.Tk()
 
-t = tk.Text(root, bg="black", fg="white", height=window_height, width=window_width)
+    t = tk.Text(root, bg="black", fg="white", height=window_height, width=window_width)
+    t.pack()
 
-widgets = {}
-drawboard = [[(' ', -10) for i in range(30)] for j in range(100)]
+    widgets = {}
+    drawboard = []
 
+    def add_widget(self, widget_type, name, x, y, width, height, z=0):
+        if width > 0 and height > 0:
+            if widget_type in ('rect', 'Rect'):
+                self.widgets[name] = Widget.Rect(name, x, y, width, height, z)
+            elif widget_type in ('textbox', 'Textbox'):
+                self.widgets[name] = Widget.Textbox(name, x, y, width, height, z)
+            elif widget_type in ('gradient', 'Gradient'):
+                self.widgets[name] = Widget.Gradient(name, x, y, width, height, z)
+            elif widget_type in ('variable', 'Variable'):
+                self.widgets[name] = Widget.Variable(name, x, y, width, height, z)
+            elif widget_type in ('diagram', 'Diagram'):
+                self.widgets[name] = Widget.Diagram(name, x, y, width, height, z)
+            elif widget_type in ('bar', 'Bar'):
+                self.widgets[name] = Widget.Bar(name, x, y, width, height, z)
+            else:
+                print("[Warning] add_widget() called with unknown widget_type")
+        else:
+            print("[Warning] add_widget() called with illegal width and height: (" + str(width) + ", "
+                  + str(height) + ")")
 
-def add_widget(widget_type, name, x, y, width, height, z=0):
-    if widget_type in ('rect', 'Rect'):
-        widgets[name] = Widget.Rect(name, x, y, width, height, z)
-    elif widget_type in ('textbox', 'Textbox'):
-        widgets[name] = Widget.Textbox(name, x, y, width, height, z)
-    elif widget_type in ('gradient', 'Gradient'):
-        widgets[name] = Widget.Gradient(name, x, y, width, height, z)
-    elif widget_type in ('variable', 'Variable'):
-        widgets[name] = Widget.Variable(name, x, y, width, height, z)
-    elif widget_type in ('diagram', 'Diagram'):
-        widgets[name] = Widget.Diagram(name, x, y, width, height, z)
+    def remove_widget(self, name):
+        if name in self.widgets:
+            del self.widgets[name]
+        else:
+            print("[Warning] Widget ", name, " does not exist. Deletion will be skipped")
 
+    def get_size(self):
+        return self.window_width, self.window_height
 
-def remove_widget(name):
-    if name in widgets:
-        del widgets[name]
-    else:
-        print("[Warning] Widget ", name, " does not exist. Deletion will be skipped")
+    def resize(self, width, height):
+        if width > 0 and height > 0:
+            self.window_width = width
+            self.window_height = height
 
+            self.t.forget()
 
-def update_variables():
-    pass
+            self.t = tk.Text(self.root, bg="black", fg="white", height=height, width=width)
+            self.t.pack()
+        else:
+            print("[Warning] resize() called with illegal width and height: (" + str(width) + ", " + str(height) + ")")
 
+    def update(self):
+        self.drawboard = [[(' ', -10) for i in range(self.window_height)] for j in range(self.window_width)]
 
-def update():
+        # insert widget text into drawboard array
+        for current_widget in list(self.widgets.values()):
 
-    update_variables()
+            current_text = current_widget.get_printable()
 
-    drawboard = [[(' ', -10) for i in range(30)] for j in range(100)]
+            current_width = current_widget.width
+            current_height = current_widget.height
 
-    # insert widget text into drawboard array
-    for current_widget in list(widgets.values()):
+            current_x = current_widget.x
+            current_y = current_widget.y
+            current_z = current_widget.z
 
-        current_text = current_widget.get_printable()
+            current_transparent = current_widget.transparent
 
-        current_width = current_widget.width
-        current_height = current_widget.height
+            for x in range(current_width):
+                for y in range(current_height):
+                    # print(drawboard[current_x + x][current_y + y][1])
+                    # print(current_z)
 
-        current_x = current_widget.x
-        current_y = current_widget.y
-        current_z = current_widget.z
+                    if 0 <= current_x + x < self.window_width and 0 <= current_y + y < self.window_height:
 
-        current_transparent = current_widget.transparent
+                        if self.drawboard[current_x + x][current_y + y][1] <= current_z:
+                            # print("pos", current_x + x, current_y + y)
+                            # print("x, y", x, y)
 
-        for x in range(current_width):
-            for y in range(current_height):
-                # print(drawboard[current_x + x][current_y + y][1])
-                # print(current_z)
+                            if not (current_text[y][x] == ' ' and current_transparent):
 
-                if 0 <= current_x + x < window_width and 0 <= current_y + y < window_height:
+                                self.drawboard[current_x + x][current_y + y] = (current_text[y][x], current_z)
+                                if self.drawboard[current_x + x][current_y + y][0] == '':
+                                    self.drawboard[current_x + x][current_y + y] = (' ', current_z)
 
-                    if drawboard[current_x + x][current_y + y][1] <= current_z:
-                        # print("pos", current_x + x, current_y + y)
-                        # print("x, y", x, y)
+        self.t.delete("1.0", "end")
 
-                        if not (current_text[y][x] == ' ' and current_transparent):
+        # insert Text into TKinter
+        for y in range(self.window_height):
+            word = ''
+            for x in range(self.window_width):
+                word += self.drawboard[x][y][0]
+            word += "\n"
+            self.t.insert(tk.END, word)
 
-                            drawboard[current_x + x][current_y + y] = (current_text[y][x], current_z)
-                            if drawboard[current_x + x][current_y + y][0] == '':
-                                drawboard[current_x + x][current_y + y] = (' ', current_z)
-
-    t.delete("1.0", "end")
-
-    # insert Text into TKinter
-    for y in range(window_height):
-        word = ''
-        for x in range(window_width):
-            word += drawboard[x][y][0]
-        word += "\n"
-        t.insert(tk.END, word)
-
-    root.update()
-
-
-real_y = window_height - window_height // 3
-
-# add_widget('gradient', 'grad', 0, window_height - window_height // 3, window_width, window_height // 3, 0)
-# widgets['grad'].set_direction('down')
-# widgets['grad'].set_transparent(True)
-
-add_widget('diagram', 'd1', 0, 0, window_width + 2, window_height, 3)
-add_widget('variable', 'v1', 70, 0, 28, 5, 4)
-
-widgets['d1'].set_min_max(0, 29)
-widgets['d1'].set_fill('#')
-widgets['d1'].set_transparent(True)
-widgets['d1'].set_fill_bar(True)
-widgets['d1'].set_draw_axis(True)
-
-widgets['v1'].set_transparent(True)
-
-t.pack()
-
-while True:
-    time.sleep(0.05)
-    update()
-
-    # widgets['grad'].set_pos(0, real_y + int(math.sin(tick / 50) * 40))
-    # widgets['grad'].height = window_height // 3 - int(math.sin(tick / 50) * 40)
-
-    widgets['d1'].add_value(math.sin(tick/15) * 15 + 15)
-    widgets['v1'].set_variable('Height', math.sin(tick/15) * 15 + 15)
-
-    tick += 1
+        self.root.update()
