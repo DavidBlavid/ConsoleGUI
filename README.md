@@ -19,7 +19,7 @@ Once you have a CG Object you can customize it or add Widgets.
 Widgets get saved in an internal Dict. You can adress specific Widgets  
 by calling the Dict with the Widgets name.
 ```
-cg1.add_widget('diagram', 'd1', 0, 0, width, height, 3)
+cg1.add_widget('diagram', 'd1', 1, 1, 20, 20, 3)
 cg1.widgets['d1'].set_transparent(True)
 ```
 
