@@ -1,6 +1,4 @@
 from Color import *
-import math
-
 
 class Widget:
     def __init__(self, name, x, y, width, height, z=0, transparent=False):
@@ -36,7 +34,7 @@ class Widget:
         self.height = height
 
     def get_size(self):
-        return self.width, self.size
+        return self.width, self.height
 
     def get_printable(self):
 
@@ -101,7 +99,7 @@ class Ellipse(Widget):
         return widget_print
 
 
-class Textbox(Widget):
+class Text(Widget):
     text = ''
     empty_char = ' '
 
@@ -124,6 +122,80 @@ class Textbox(Widget):
     def get_printable(self):
 
         return self.text
+
+
+class Textbox(Widget):
+    chars = [[]]
+
+    def __init__(self, name, x, y, width, height, z=0, transparent=False):
+        self.width = width
+        self.height = height
+
+        self.x = x
+        self.y = y
+        self.z = z
+
+        self.name = name
+
+        self.transparent = transparent
+
+        self.chars = [[' ' for i in range(self.width)] for j in range(self.height)]
+
+    def set_scale(self, width, height):
+
+        self.chars = [[' ' for i in range(width)] for j in range(height)]
+
+        self.width = width
+        self.height = height
+
+    def set_char(self, char, x, y):
+        if x < 0 or x >= self.width:
+            raise ValueError("Illegal value for x: x = ", x)
+        if y < 0 or y > self.height:
+            raise ValueError("Illegal value for y: y = ", y)
+        if len(char) != 1:
+            raise ValueError("Illegal value for char: char = ", char)
+        self.chars[y][x] = char
+
+    def clear(self):
+        self.chars = [[' ' for i in range(self.width)] for j in range(self.height)]
+
+    def add_pattern(self, pattern, x, y, transparent=False):
+
+        pattern_height = len(pattern)
+
+        for y_delta in range(pattern_height):
+            # pattern_width = max(pattern_width, len(pattern[y]))
+
+            for x_delta in range(len(pattern[y_delta])):
+                if 0 <= x + x_delta < self.width and 0 <= y + y_delta < self.height:
+                    if x_delta < len(pattern[y_delta]):
+                        if not (transparent and pattern[y_delta][x_delta] == ' '):
+                            self.chars[y + y_delta][x + x_delta] = pattern[y_delta][x_delta]
+
+    def set_text(self, new_text):
+        self.chars = [[' ' for i in range(self.width)] for j in range(self.height)]
+
+        length = len(new_text)
+        counter = 0
+
+        for y in range(self.height):
+            for x in range(self.width):
+                if counter < length:
+                    self.chars[y][x] = new_text[counter]
+                    counter += 1
+
+    def get_printable(self):
+
+        widget_print = []
+
+        for y in range(self.height):
+            current_word = ''
+            for x in range(self.width):
+                current_word += str(self.chars[y][x])
+            widget_print.append(current_word)
+
+        return widget_print
 
 
 class Gradient(Widget):
@@ -198,7 +270,7 @@ class Diagram(Widget):
 
         self.transparent = transparent
 
-        self.values = [None] * width
+        self.values = [None for i in range(width)]
 
     def set_draw_axis(self, visible):
         self.draw_axis = visible
@@ -223,7 +295,7 @@ class Diagram(Widget):
         counter = 0
 
         if width > 2:
-            next_values = [None] * (width - 2)
+            next_values = [None for i in range(width - 2)]
 
         if self.width > width:
             for i in range(self.width - width, self.width - 2):

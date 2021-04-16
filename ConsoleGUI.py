@@ -20,6 +20,8 @@ class CG:
         if width > 0 and height > 0:
             if widget_type in ('rect', 'Rect'):
                 self.widgets[name] = Widget.Rect(name, x, y, width, height, z, transparent)
+            elif widget_type in ('text', 'Text'):
+                self.widgets[name] = Widget.Text(name, x, y, width, height, z, transparent)
             elif widget_type in ('textbox', 'Textbox'):
                 self.widgets[name] = Widget.Textbox(name, x, y, width, height, z, transparent)
             elif widget_type in ('gradient', 'Gradient'):
@@ -56,7 +58,7 @@ class CG:
 
     def set_font(self, font, size):
         config = (font, size)
-        self.t.configure(font = config)
+        self.t.configure(font=config)
 
     def resize(self, width, height):
         if width > 0 and height > 0:

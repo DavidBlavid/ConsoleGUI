@@ -55,6 +55,7 @@ For a proper example check out Example.py
 # Widgets:  
 ```
 Widget Types:   - rect
+                - text
                 - textbox
                 - gradient
                 - variable
@@ -119,17 +120,45 @@ Draws a filled Ellipse
     scale < 1.0: Ellipse is smaller than borders.  
     scale = 1.0: Ellipse touches borders.  
     scale > 1.0: Ellipse is bigger than borders.  
-    ```Default: scale = 1.0```
+    ```Default: scale = 1.0```  
 
-### Textbox
-Draws a Textbox.
+### Text
+Displays text with simple wrapping.
 
 - **_set_text(new_text)_**  
   Changes the displayed Text.
+
+### Textbox
+Displays characters like **Text**, but with more control over them.
+
+- **_set_text(new_text)_**  
+  Changes the displayed Text, similar to **Text**.
+
+
+- **_set_char(char, x, y)_**  
+    Sets a single Character in the Textbox. 
+  
+  
+- **_add_pattern(pattern, x, y, [transparent])_**  
+    Imprints the Textbox with a pattern. The Pattern has to be an Array of Strings.  
+    Example: ```pattern = ['123', '456', '789']```  
+    Will be displayed as:
+  ```
+  123
+  456
+  789
+    ```
+  If transparent is set to True, spaces will not override symbols behind them.  
+    ```Default: transparent = False```  
   
 
+- **_clear()_**  
+    Clears the Textbox.
+
+
+
 ### Gradient  
-Like Rect, but filled with a Gradient.  
+Like **Rect**, but filled with a Gradient.  
 
 - **_set_direction(new_direction)_**  
     Sets the Direction of the Gradient.  
