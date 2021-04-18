@@ -18,8 +18,12 @@ Once you have a CG Object you can customize it or add Widgets.
 
 Widgets get saved in an internal Dict. You can adress specific Widgets  
 by calling the Dict with the Widgets name.
+
 ```
+# Adds a Diagram Widget with the name 'd1'
 cg1.add_widget('diagram', 'd1', 1, 1, 20, 20, 3)
+
+# Sets the transparency of 'd1' to True
 cg1.widgets['d1'].set_transparent(True)
 ```
 
@@ -61,6 +65,7 @@ Widget Types:   - rect
                 - variable
                 - diagram
                 - bar
+                - container
 ```
 
 Widgets with higher z values get draw over widgets with lower z values.
@@ -218,7 +223,6 @@ Similar to a loading bar, it displays a value in a range as a bar.
     empty_char controls the Character the Background of the Bar is filled with.  
     ```Default: fill_char = '=', empty_char = ' '```
   
-
 - **_set_value(value)_**  
     Sets the to be displayed Value.  
     ```Default: value = 0```  
@@ -229,3 +233,33 @@ Similar to a loading bar, it displays a value in a range as a bar.
     ```Default: direction = 'left'```  
     ```Values:  'left', 'up', 'right', 'down'```
   
+  
+### Container
+A smaller canvas that can contain its own Widgets (and even other Containers!).  
+Widgets get saved in an internal Dict. You can adress specific Widgets  
+by calling the Dict with the Widgets name.  
+
+The Z Values of Widgets inside the Container only matters to other Widgets inside the Container.  
+Widgets outside the Container only care about the Containers Z Value.  
+
+- **_add_widget(widget_type, name, x, y, width, height, [z])_**  
+    Adds a Widget with specified type, name, position and scale.  
+    Adding a Widget with an already existing name will overwrite the Widget.  
+    Possible Values for widget_type can be found under **Widgets**.
+
+
+- **_remove_widget(name)_**  
+    Removes the Widget with the specified Name.
+  
+Example:
+```
+# Creates a Container with the name 'c1'
+cg1.add_widget('container', 'c1', 35, 5, 30, 20)
+
+# Creates the Rectangle 'c1_t1' within the Container 'c1'
+cg1.widgets['c1'].add_widget('rect', 'c1_t1', 0, 0, 30, 20)
+
+# Changes the Fill Character of the Rectangle
+# Notice the Recursive widgets[] Calls
+cg1.widgets['c1'].widgets['c1_t1'].set_fill('X')
+```

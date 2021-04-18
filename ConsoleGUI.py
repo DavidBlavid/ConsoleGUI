@@ -1,5 +1,6 @@
 import tkinter as tk
 import Widget
+import Container
 
 
 class CG:
@@ -34,10 +35,12 @@ class CG:
                 self.widgets[name] = Widget.Bar(name, x, y, width, height, z, transparent)
             elif widget_type in ('ellipse', 'Ellipse'):
                 self.widgets[name] = Widget.Ellipse(name, x, y, width, height, z, transparent)
+            elif widget_type in ('container', 'Container'):
+                self.widgets[name] = Container.Container(name, x, y, width, height, z, transparent)
             else:
-                print("[Warning] add_widget() called with unknown widget_type")
+                raise ValueError("add_widget() called with unknown widget_type: widget_type = " + widget_type)
         else:
-            print("[Warning] add_widget() called with illegal width and height: (" + str(width) + ", "
+            raise ValueError("[Warning] add_widget() called with illegal width and height: (" + str(width) + ", "
                   + str(height) + ")")
 
     def remove_widget(self, name):

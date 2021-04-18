@@ -1,5 +1,6 @@
 from Color import *
 
+
 class Widget:
     def __init__(self, name, x, y, width, height, z=0, transparent=False):
         self.width = width
@@ -347,8 +348,8 @@ class Diagram(Widget):
 
                         # print(self.values[x] - self.min_value)
 
-                        value_y = ((self.values[x] - self.min_value) * (self.height - 1)
-                                   / (self.max_value - self.min_value))
+                        value_y = int(((self.values[x] - self.min_value) * (self.height - 1)
+                                   / (self.max_value - self.min_value)))
 
                         if self.fill_bar:
                             if value_y >= self.height - 1 - y:
