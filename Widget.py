@@ -349,7 +349,7 @@ class Diagram(Widget):
                         # print(self.values[x] - self.min_value)
 
                         value_y = int(((self.values[x] - self.min_value) * (self.height - 1)
-                                   / (self.max_value - self.min_value)))
+                                       / (self.max_value - self.min_value)))
 
                         if self.fill_bar:
                             if value_y >= self.height - 1 - y:
@@ -390,7 +390,8 @@ class Bar(Widget):
         if direction in ['right', 'left', 'up', 'down']:
             self.direction = direction
         else:
-            print("[Error] set_direction() called from widget " + self.name + " with unknown direction " + direction)
+            raise ValueError(
+                "[Error] set_direction() called from widget " + self.name + " with unknown direction " + direction)
 
     def get_printable(self):
 
@@ -411,5 +412,89 @@ class Bar(Widget):
             if self.direction == 'down':
                 widget_print += [self.empty_char * self.width] * (self.height - filled)
                 widget_print += [self.fill_char * self.width] * filled
+
+        return widget_print
+
+
+class Table(Widget):
+    values = [[]]
+    min_value = 0
+    max_value = 10
+
+    gradient_type = 'large'
+
+    def __init__(self, name, x, y, width, height, z=0, transparent=False):
+        self.width = width
+        self.height = height
+
+        self.x = x
+        self.y = y
+        self.z = z
+
+        self.name = name
+
+        self.transparent = transparent
+
+        self.values = [[0 for i in range(self.width)] for j in range(self.height)]
+
+    def set_min_max(self, new_min, new_max):
+        self.min_value = new_min
+        self.max_value = new_max
+
+    def set_scale(self, width, height):
+
+        self.values = [[self.min_value for i in range(width)] for j in range(height)]
+
+        self.width = width
+        self.height = height
+
+    def set_value(self, value, x, y):
+        if x < 0 or x >= self.width:
+            raise ValueError("Illegal value for x: x = ", x)
+        if y < 0 or y > self.height:
+            raise ValueError("Illegal value for y: y = ", y)
+        self.values[y][x] = value
+
+    def set_gradient_type(self, type):
+        if type not in ('small', 'large'):
+            raise ValueError("Undefined Gradient Type", type)
+        self.gradient_type = type
+
+    def clear(self):
+        self.values = [[self.min_value for i in range(self.width)] for j in range(self.height)]
+
+    def add_pattern(self, pattern, x, y, transparent=False):
+
+        pattern_height = len(pattern)
+
+        for y_delta in range(pattern_height):
+            # pattern_width = max(pattern_width, len(pattern[y]))
+
+            for x_delta in range(len(str(pattern[y_delta]))):
+                if 0 <= x + x_delta < self.width and 0 <= y + y_delta < self.height:
+                    if x_delta < len(str(pattern[y_delta])):
+                        if not (transparent and pattern[y_delta][x_delta] == 0):
+                            self.values[y + y_delta][x + x_delta] = str(pattern[y_delta])[x_delta]
+
+    def get_printable(self):
+
+        widget_print = []
+
+        for y in range(self.height):
+            current_word = ''
+            for x in range(self.width):
+                current_value = int(self.values[y][x])
+
+                current_value = min(current_value, self.max_value)
+                current_value = max(current_value, self.min_value)
+
+                current_value = (current_value - self.min_value) / (self.max_value - self.min_value)
+
+                if self.gradient_type == 'small':
+                    current_word += gradient_value_small(current_value)
+                else:
+                    current_word += gradient_value(current_value)
+
+            widget_print.append(current_word)
 
         return widget_print

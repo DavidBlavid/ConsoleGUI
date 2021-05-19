@@ -21,10 +21,10 @@ by calling the Dict with the Widgets name.
 
 ```
 # Adds a Diagram Widget with the name 'd1'
-cg1.add_widget('diagram', 'd1', 1, 1, 20, 20, 3)
+cg.add_widget('diagram', 'd1', 1, 1, 20, 20, 3)
 
 # Sets the transparency of 'd1' to True
-cg1.widgets['d1'].set_transparent(True)
+cg.widgets['d1'].set_transparent(True)
 ```
 
 For a proper example check out Example.py  
@@ -56,6 +56,20 @@ For a proper example check out Example.py
 
 
 ---
+# Color  
+While colored Text is currently not implemented, a brightness value can be simulated
+by drawing specific characters from a gradient.
+
+Currently there are two types of Gradient, a small and a large one.
+```
+Small Gradient:  .:-=+*#%@
+Large Gradient:  .'´\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$
+ ```
+
+To get a Gradient Character for a brightness value between [0, 1],
+call _either gradient_value(p)_ or _gradient_value_small(p)_ from Color.py.
+
+---
 # Widgets:  
 ```
 Widget Types:   - rect
@@ -66,6 +80,7 @@ Widget Types:   - rect
                 - diagram
                 - bar
                 - container
+                - table
 ```
 
 Widgets with higher z values get draw over widgets with lower z values.
@@ -263,3 +278,40 @@ cg1.widgets['c1'].add_widget('rect', 'c1_t1', 0, 0, 30, 20)
 # Notice the Recursive widgets[] Calls
 cg1.widgets['c1'].widgets['c1_t1'].set_fill('X')
 ```
+
+### Table
+Similar to a Textbox, a Table is an array of values. The difference is that
+Tables contain numerical values instead of characters. These values get interpolated
+between the min and max value of the Table and finally assigned a gradient value.
+
+- **_set_min_max(new_min, new_max)_**  
+  Sets the min and max value of the Table. All Values get interpolated between these.
+
+
+- **_set_value(self, value, x, y):_**  
+    Sets a single Value at a specified Position.
+  
+  
+- **_set_gradient_type(type)_**  
+  Sets the Gradient Type the Table uses. Check the Chapter **Color** for more info.  
+  ```Default: type = 'large'```  
+  ```Values:  'large', 'small'```  
+  
+
+- **_add_pattern(pattern, x, y, [transparent])_**  
+    Imprints the Table with a pattern. The Pattern has to be an Array of Digits.  
+    Example: ```pattern = [123, 456, 789]```  
+    with a min of 0 and a max of 10 will be displayed as:
+  ```
+   .:
+  -=+
+  *#%
+    ```
+  If transparent is set to True, spaces will not override symbols behind them.  
+  Warning! Adding Patterns with a min and max outside of 0-9 could cause
+  unexpected Behavior.
+    ```Default: transparent = False```  
+  
+
+- **_clear()_**  
+    Clears the Table. Every Value gets set to the min value.

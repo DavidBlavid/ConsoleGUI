@@ -27,6 +27,8 @@ class Container(Widget.Widget):
                 self.widgets[name] = Widget.Ellipse(name, x, y, width, height, z, transparent)
             elif widget_type in ('container', 'Container'):
                 self.widgets[name] = Container(name, x, y, width, height, z, transparent)
+            elif widget_type in ('table', 'Table'):
+                self.widgets[name] = Widget.Table(name, x, y, width, height, z, transparent)
             else:
                 raise ValueError("add_widget() called from Container with unknown widget_type: widget_type = " +
                                  widget_type)
@@ -73,7 +75,7 @@ class Container(Widget.Widget):
 
                                 drawboard[current_x + x][current_y + y] = (current_text[y][x], current_z)
                                 if drawboard[current_x + x][current_y + y][0] == '':
-                                    drawboard[current_x + x][current_y + y] = (self.empty_char, current_z)
+                                    drawboard[current_x + x][current_y + y] = (' ', current_z)
 
         # insert Text widget_print
         for y in range(self.height):

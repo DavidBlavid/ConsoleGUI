@@ -17,24 +17,24 @@ cg1.widgets['d1'].set_draw_axis(False)
 cg1.widgets['d1'].set_min_max(0, 30)
 
 cg1.add_widget('container', 'c1', 35, 5, 30, 20, 1, True)
-cg1.widgets['c1'].add_widget('textbox', 'c1_t1', 0, 0, 30, 20, 1, True)
+cg1.widgets['c1'].add_widget('table', 'c1_t1', 0, 0, 30, 20, 1, True)
 
 # Prepare some Patterns
-pattern_cube = ['...', '...', '...']
-pattern_square = ['OOO', 'OOO', 'OOO']
-pattern_empty = ['  ', '  ']
-pattern_empty_pre = ['******', '******', '******', '******', '******', '******']
+pattern_cube = [999, 888, 777]
+pattern_square = [123, 234, 345]
+pattern_empty = [99, 99]
+pattern_empty_pre = [2345, 3456, 4567, 5678]
 
 # For convenience
-textbox = cg1.widgets['c1'].widgets['c1_t1']
+valuebox = cg1.widgets['c1'].widgets['c1_t1']
+valuebox.set_min_max(40, 69)
+valuebox.set_gradient_type('small')
 
 # update loop
 while True:
     time.sleep(0.05)
 
     cg1.widgets['d1'].add_value(int(math.sin(tick/10) * 5 + 15))
-
-    print(int(math.sin(tick/10) * 5 + 15))
 
     # Mouse Control
     if cg1.t.index(tkinter.INSERT) != '31.0' and tick != 0:
@@ -45,10 +45,9 @@ while True:
         cg1.widgets['c1'].set_pos(mouse_x, mouse_y)
         print(mouse_x, mouse_y)
 
-    textbox.add_pattern(pattern_empty, (tick // 3) % 30, (tick // 4 - 6) % 20 % 20)
-
-    textbox.add_pattern(pattern_cube, (tick // 5) % 30, (-tick // 3) % 20)
-    textbox.add_pattern(pattern_square, (tick // 3) % 30, (tick // 4) % 20)
+    for x in range(30):
+        for y in range(20):
+            valuebox.set_value(((x * y) + tick) % 69, x, y)
 
     # update the screen
     cg1.update()

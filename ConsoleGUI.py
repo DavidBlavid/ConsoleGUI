@@ -17,8 +17,12 @@ class CG:
     widgets = {}
     drawboard = []
 
+
+    # Requires:
+    #   width > 1
+    #   height > 1
     def add_widget(self, widget_type, name, x, y, width, height, z=0, transparent=False):
-        if width > 0 and height > 0:
+        if width > 1 and height > 1:
             if widget_type in ('rect', 'Rect'):
                 self.widgets[name] = Widget.Rect(name, x, y, width, height, z, transparent)
             elif widget_type in ('text', 'Text'):
@@ -37,6 +41,8 @@ class CG:
                 self.widgets[name] = Widget.Ellipse(name, x, y, width, height, z, transparent)
             elif widget_type in ('container', 'Container'):
                 self.widgets[name] = Container.Container(name, x, y, width, height, z, transparent)
+            elif widget_type in ('table', 'Table'):
+                self.widgets[name] = Widget.Table(name, x, y, width, height, z, transparent)
             else:
                 raise ValueError("add_widget() called with unknown widget_type: widget_type = " + widget_type)
         else:
@@ -64,7 +70,7 @@ class CG:
         self.t.configure(font=config)
 
     def resize(self, width, height):
-        if width > 0 and height > 0:
+        if width > 1 and height > 1:
             self.window_width = width
             self.window_height = height
 
@@ -73,7 +79,8 @@ class CG:
             self.t = tk.Text(self.root, bg="black", fg="white", height=height, width=width)
             self.t.pack()
         else:
-            print("[Warning] resize() called with illegal width and height: (" + str(width) + ", " + str(height) + ")")
+            raise ValueError("[Warning] resize() called with illegal width and height: (" + str(width) + ", " +
+                             str(height) + ")")
 
     def update(self):
         self.drawboard = [[(' ', -10) for i in range(self.window_height)] for j in range(self.window_width)]
